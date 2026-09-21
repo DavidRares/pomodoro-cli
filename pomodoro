@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+pomodoro() {
+	split="${1:-}"
+	if [[ -z "$split" ]]; then
+		split=$(gum choose "25/5" "50/10" "done" --header "Choose split times:")
+	fi
+	
+	case "$split" in
+		"25/5")
+		work_time="25m"
+		break_time="5m"
+		;;
+		"50/10")
+		work_time="50m"
+		break_time="10m"
+		;;
+		"done"|"")
+		exit 0
+		;;
+	esac
+	
+	timer "$work_time" && osascript -e 'display notification "Pomodoro" with title "Work time is up! Time for a break!" sound name "Crystal" '
+
+	if gum confirm "Do you want to take the ${break_time} break?"; then
+		timer "$break_time" && osascript -e 'display notification "Pomodoro" with title "Break time is up! Time to work!" sound name "Crystal" '
+	fi
+	
+	unset split
+	pomodoro ""
+		
+}
+
+pomodoro ""
