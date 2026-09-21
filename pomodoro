@@ -4,7 +4,7 @@ set -euo pipefail
 pomodoro() {
 	split="${1:-}"
 	if [[ -z "$split" ]]; then
-		split=$(gum choose "25/5" "50/10" "done" --header "Choose split times:")
+		split=$(gum choose "25/5" "50/10" "custom" "done" --header "Choose split times:")
 	fi
 	
 	case "$split" in
@@ -15,6 +15,10 @@ pomodoro() {
 		"50/10")
 		work_time="50m"
 		break_time="10m"
+		;;
+		"custom")
+		work_time="$(gum input --prompt "Choose work time(mins):")m"
+		break_time="$(gum input --prompt "Choose break time(mins):")m"
 		;;
 		"done"|"")
 		exit 0
